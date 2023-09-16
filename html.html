@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Juego de Clicks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    <!-- Estilos CSS aquí -->
+  </style>
+</head>
+<body>
+  <div id="languageMenu">
+    <label for="languageSelect">Idioma:</label>
+    <select id="languageSelect" onchange="changeLanguage()">
+      <option value="es">Español</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
+  <div id="interface">
+    <h1 id="gameTitle" style="color: #333; font-size: 24px; margin-bottom: 10px;">Juego de Clicks</h1>
+    <div id="userInfo"></div>
+    <button onclick="startGame()" class="circular-button" style="background-color: #3498db;">Comenzar</button>
+  </div>
+
+  <div id="game" style="display: none;">
+    <p id="clickCounter" style="color: #333;">Clics: 0</p>
+    <button onclick="incrementClick()" class="circular-button" style="background-color: #3498db;">Haz clic</button>
+    <button onclick="returnToInterface()" class="restart-button" style="background-color: #2ecc71;">Volver a la interfaz</button>
+  </div>
+
+  <script>
+    <!-- JavaScript aquí -->
+  </script>
+</body>
+</html>
+
+
+
+
+
