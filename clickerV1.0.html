@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Juego de Clicks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+
+    #interface, #game {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 80%;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+
+    .circular-button {
+      padding: 20px;
+      font-size: 20px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .circular-button:hover {
+      background-color: #2980b9;
+    }
+
+    .restart-button {
+      background-color: #2ecc71;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-top: 20px;
+      display: inline-block;
+    }
+
+    .restart-button:hover {
+      background-color: #27ae60;
+    }
+
+    #clickCounter {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    #userInfo {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    /* Estilos para el menú de idiomas */
+    #languageMenu {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div id="languageMenu">
+    <label for="languageSelect">Idioma:</label>
+    <select id="languageSelect" onchange="changeLanguage()">
+      <option value="es">Español</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
+  <div id="interface">
+    <h1 id="gameTitle" style="color: #333; font-size: 24px; margin-bottom: 10px;">Juego de Clicks</h1>
+    <div id="userInfo"></div>
+    <button onclick="startGame()" class="circular-button" style="background-color: #3498db;">Comenzar</button>
+  </div>
+
+  <div id="game" style="display: none;">
+    <p id="clickCounter" style="color: #333;">Clics: 0</p>
+    <button onclick="incrementClick()" class="circular-button" style="background-color: #3498db;">Haz clic</button>
+    <button onclick="returnToInterface()" class="restart-button" style="background-color: #2ecc71;">Volver a la interfaz</button>
+  </div>
+
+  <script>
+    let username = '';
+    let hasUsername = false;
+    let language = 'es'; // Predeterminado: español
+
+    const textos = {
+      'es': {
+        'gameTitle': 'Juego de Clicks',
+        'startButton': 'Comenzar',
+        'clicksLabel': 'Clics',
+        'clickButton': 'Haz clic',
+        'welcomeMessage': 'Bienvenido',
+        'totalClicksMessage': 'Total de Clics',
+        'returnToInterface': 'Volver al Interfaz'
+      },
+      'en': {
+        'gameTitle': 'Clicker Game',
+        'startButton': 'Start',
+        'clicksLabel': 'Clicks',
+        'clickButton': 'Click me!',
+        'welcomeMessage': 'Welcome',
+        'totalClicksMessage': 'Total Clicks',
+        'returnToInterface': 'Return to Interface'
+      }
+    };
+
+    function incrementClick() {
+      let clickCount = parseInt(localStorage.getItem(username));
+      clickCount = isNaN(clickCount) ? 0 : clickCount;
+      clickCount++;
+      localStorage.setItem(username, clickCount);
+
+      const clickCounterElement = document.getElementById('clickCounter');
+      clickCounterElement.innerText = textos[language]['clicksLabel'] + ': ' + clickCount;
+
+      // Check for milestones (1000, 10000, 100000)
+      if (clickCount === 1000) {
+        alert('¡Felicidades! Has alcanzado 1000 clics.');
+      } else if (clickCount === 10000) {
+        alert('¡Increíble! Has alcanzado 10000 clics.');
+      } else if (clickCount === 100000) {
+        alert('¡WOW! Has alcanzado 100000 clics. ¡Eres increíble!');
+      }
+    }
+
+    function returnToInterface() {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('interface').style.display = 'block';
+
+      const userInfoElement = document.getElementById('userInfo');
+      const clickCount = parseInt(localStorage.getItem(username)) || 0;
+      userInfoElement.innerText = textos[language]['welcomeMessage'] + ', ' + username + '! ' + textos[language]['totalClicksMessage'] + ': ' + clickCount;
+    }
+
+    function startGame() {
+      if (!hasUsername) {
+        const usernameInput = prompt(textos[language]['welcomeMessage'] + ' - ' + textos[language]['startButton']);
+        username = usernameInput ? usernameInput.trim() : '';
+
+        if (username === '') {
+          alert(textos[language]['startButton'] + ': ' + 'Por favor, ingresa un nombre de usuario válido.');
+          return;
+        }
+
+        hasUsername = true;
+      }
+
+      document.getElementById('interface').style.display = 'none';
+      document.getElementById('game').style.display = 'block';
+
+      loadProgress();
+
+      // Update the text for the "Haz clic" button
+      document.querySelectorAll('.circular-button')[1].innerText = textos[language]['clickButton'];
+    }
+
+    function changeLanguage() {
+      const languageSelect = document.getElementById('languageSelect');
+      language = languageSelect.value;
+      updateTexts();
+    }
+
+    function updateTexts() {
+      document.getElementById('gameTitle').innerText = textos[language]['gameTitle'];
+      document.querySelector('.circular-button').innerText = textos[language]['startButton'];
+      document.getElementById('clickCounter').innerText = textos[language]['clicksLabel'] + ': 0';
+      document.querySelectorAll('.circular-button')[1].innerText = textos[language]['clickButton'];
+      document.querySelector('.restart-button').innerText = textos[language]['returnToInterface'];
+    }
+
+    window.onload = updateTexts;
+  </script>
+</body>
+</html>
+
